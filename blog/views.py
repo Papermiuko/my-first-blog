@@ -1,41 +1,50 @@
-from django.shortcuts import render
-from django.utils import timezone
-from .models import Post
-from django.shortcuts import render, get_object_or_404
-from .forms import PostForm
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
+from .models import Reserva
+from datetime import datetime
+from django.contrib import messages
 
-def post_list(request):
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-    return render(request, 'blog/post_list.html', {'posts': posts})
+def index(request):
+    return render(request, 'index.html', {})
 
-def post_detail (request, pk): 
-    post = get_object_or_404(Post, pk=pk)
-    return render(request, 'blog/post_detail.html', {'post': post})
+def contact(request):
+    return render(request, 'contact.html', {})
 
-def post_new(request):
-    if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('post_detail', pk=post.pk)
+def gallery(request):
+    return render(request, 'gallery.html', {})
+
+def menu(request):
+    return render(request, 'menu.html', {})
+
+def reservation(request):
+    return render(request, 'reservation.html', {})
+
+from django.contrib import messages
+from .models import Reserva
+
+def reservar(request):
+    if request.method == 'POST':
+        # Procesar la reserva
+        fecha_str = request.POST.get('fecha')
+        fecha = datetime.strptime(fecha_str, '%d %b, %Y').strftime('%Y-%m-%d')
+
+        nombre = request.POST.get('name')
+        email = request.POST.get('email')
+        telefono = request.POST.get('phone')
+        hora = request.POST.get('hora')
+        numero_personas = request.POST.get('person')
+
+        # Crear una instancia de Reserva
+        reserva = Reserva(nombre=nombre, email=email, telefono=telefono, fecha=fecha, hora=hora, numero_personas=numero_personas)
+
+        # Guardar la reserva
+        reserva.save()
+
+        # Agregar un mensaje de éxito
+        messages.success(request, '¡Reserva realizada con éxito!')
+
+        # Redirigir al usuario a la misma página de reserva
+        return redirect('reservar')
     else:
-        form = PostForm()
-    return render(request, 'blog/post_edit.html', {'form': form})
+        return render(request, 'reservation.html')
 
-def post_edit(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = PostForm(instance=post)
-    return render(request, 'blog/post_edit.html', {'form': form})
+

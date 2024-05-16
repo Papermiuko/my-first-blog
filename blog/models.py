@@ -4,14 +4,13 @@ from django.db import models
 from django.utils import timezone
 
 
-class Post(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    text = models.TextField()
-    created_date = models.DateTimeField(
-            default=timezone.now)
-    published_date = models.DateTimeField(
-            blank=True, null=True)
+class Reserva(models.Model):
+    nombre = models.CharField(max_length=100)
+    email = models.EmailField()
+    telefono = models.CharField(max_length=20)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    numero_personas = models.IntegerField()
 
-    def publish(self):
-        self.published_date = timezone.no
+    def __str__(self):
+        return self.nombre

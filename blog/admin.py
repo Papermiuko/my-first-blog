@@ -1,4 +1,8 @@
 from django.contrib import admin
-from .models import Post
+from .models import Reserva
 
-admin.site.register(Post)
+# En tu archivo admin.py
+
+@admin.register(Reserva)
+class ReservaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'email', 'telefono', 'fecha', 'hora', 'numero_personas')
