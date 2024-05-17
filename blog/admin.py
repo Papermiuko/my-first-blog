@@ -5,4 +5,4 @@ from .models import Reserva
 
 @admin.register(Reserva)
 class ReservaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'email', 'telefono', 'fecha', 'hora', 'numero_personas')
+    list_display = ('nombre', 'email', 'telefono', 'fecha', 'hora', 'jornada', 'numero_personas')

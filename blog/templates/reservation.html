@@ -52,6 +52,23 @@
 		width: 160px; /* Ancho de la imagen */
         height: auto; /* Altura ajustada automáticamente para mantener la proporción */
 		}
+		.btn-light input[type="radio"] {
+  display: none; /* Oculta el botón de radio original */
+}
+
+.btn-light label.btn {
+  color: black; /* Cambia el color del texto a negro */
+}
+
+.btn-light input[type="radio"]:checked + label.btn {
+  background-color: #6c757d; /* Cambia el color de fondo cuando el botón está seleccionado */
+  color: white; /* Cambia el color del texto cuando el botón está seleccionado */
+}
+.confirmation-container {
+  margin-top: 40px; /* Ajusta este valor según sea necesario para el espacio deseado */
+}
+
+
 	</style>
 </head>
 
@@ -71,15 +88,15 @@
 						<li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
 						<li class="nav-item"><a class="nav-link" href="menu.html">Menu</a></li>
 						
-						<li class="nav-item dropdown active">
-							<a class="nav-link dropdown-toggle" href="#" id="dropdown-a" data-toggle="dropdown">Pages</a>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle active" href="#" id="dropdown-a" data-toggle="dropdown">Paginas</a>
 							<div class="dropdown-menu" aria-labelledby="dropdown-a">
-								<a class="dropdown-item active" href="reservation.html">Reservation</a>
-								<a class="dropdown-item" href="gallery.html">Gallery</a>
+								<a class="dropdown-item active" href="reservation.html">Reserva</a>
+								<a class="dropdown-item" href="gallery.html">Galeria</a>
 							</div>
 						</li>
 						
-						<li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+						<li class="nav-item"><a class="nav-link" href="contact.html">Contacto</a></li>
 					</ul>
 				</div>
 			</div>
@@ -95,19 +112,20 @@
 		<div class="container text-center">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1>Reservation</h1>
+					<h1>Reserva</h1>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- End All Pages -->
 	
+		<!-- Empieza el codigo que quiero -->
 	<div class="reservation-box">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="heading-title text-center">
-						<h2>Reservation</h2>
+						<h2>Reserva</h2>
 						<p>En nuestro restaurante, tu experiencia es nuestra prioridad. Con un ambiente acogedor y un servicio excepcional, te invitamos a reservar tu mesa y sumergirte en una experiencia gastronómica única. ¡Esperamos recibirte pronto!.</p>
 					</div>
 				</div>
@@ -115,22 +133,36 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="submit-button text-center">
-						<form id="reservationForm" action="{% url 'reservar' %}" method="post">
+						<form id="reservationForm" action="{% url 'reservar' %}" method="post" onsubmit="return enviarFormulario()">
 							{% csrf_token %}
 							<div class="row">
 								<div class="col-md-6">
-									<h3>Book a table</h3>
+									<h3>Reservar una mesa</h3>
 									<div class="col-md-12">
 										<div class="form-group">
 											<input id="input_date" class="datepicker picker__input form-control" name="fecha" type="text" placeholder="Fecha" value="" required data-error="Por favor ingrese la fecha">
 											<div class="help-block with-errors"></div>
-										</div>                                 
+										</div>
 									</div>
+									
 									<div class="col-md-12">
 										<div class="form-group">
-											<input id="input_time" class="time form-control picker__input" name="hora" placeholder="Hora" required data-error="Por favor ingrese la hora">
+											<div class="input-group">
+												<input type="time" class="form-control" id="hora" name="hora" placeholder="Hora" required data-error="Por favor ingrese la hora">
+												<div class="input-group-append">
+													<div class="btn-group" data-toggle="buttons">
+														<label class="btn btn-light">
+														  <input type="radio" name="jornada" id="amOption" value="AM" autocomplete="off" required> AM
+														</label>
+														<label class="btn btn-light">
+														  <input type="radio" name="jornada" id="pmOption" value="PM" autocomplete="off" required> PM
+														</label>
+													  </div>
+													  
+												</div>
+											</div>
 											<div class="help-block with-errors"></div>
-										</div>                                 
+										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
@@ -145,34 +177,38 @@
 												<option value="7">7</option>
 											</select>
 											<div class="help-block with-errors"></div>
-										</div> 
+										</div>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<h3>Contact Details</h3>
+									<h3>Detalles de contacto</h3>
 									<div class="col-md-12">
 										<div class="form-group">
 											<input type="text" class="form-control" id="name" name="name" placeholder="Tu Nombre" required data-error="Por favor ingresa tu nombre">
 											<div class="help-block with-errors"></div>
-										</div>                                 
+										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
 											<input type="text" placeholder="Tu Email" id="email" class="form-control" name="email" required data-error="Por favor ingresa tu email">
 											<div class="help-block with-errors"></div>
-										</div> 
+										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
 											<input type="text" placeholder="Tu Numero" id="phone" class="form-control" name="phone" required data-error="Por favor ingresa tu numero">
 											<div class="help-block with-errors"></div>
-										</div> 
+										</div>
 									</div>
 								</div>
 							</div>
-							<button class="btn btn-common" id="submit" type="submit">Enviar</button>
-							<div id="msgSubmit" class="h3 text-center hidden"></div> 
-							<div class="clearfix"></div> 
+								<!-- Botón de envío -->
+								<button class="btn btn-common" id="submit" type="submit">Enviar</button>
+								<div class="confirmation-container">
+									<!-- Mensaje de confirmación oculto -->
+									<div id="msgSubmit"  class="h3 text-center hidden"></div>
+								</div>
+							<div class="clearfix"></div>
 						</form>
 					</div>
 				</div>
@@ -181,13 +217,14 @@
 	</div>
 	
 	
+	
 	<!-- Start Customer Reviews -->
 	<div class="customer-reviews-box">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="heading-title text-center">
-						<h2>Customer Reviews</h2>
+						<h2>Opiniones de los usuarios</h2>
 						<p>Aquí tienes algunas impresiones de expertos en campos tecnológicos que han explorado nuestra página y compartido sus valiosas opiniones.</p>
 					</div>
 				</div>
@@ -243,7 +280,7 @@
 				<div class="col-md-4 arrow-right">
 					<i class="fa fa-volume-control-phone"></i>
 					<div class="overflow-hidden">
-						<h4>Phone</h4>
+						<h4>Celular</h4>
 						<p class="lead">
 							+57 3046413008
 						</p>
@@ -261,7 +298,7 @@
 				<div class="col-md-4">
 					<i class="fa fa-map-marker"></i>
 					<div class="overflow-hidden">
-						<h4>Location</h4>
+						<h4>Ubicacion</h4>
 						<p class="lead">
 							Cra. 29b #3363 #33- a, Br. El Prado, Cartagena de Indias, Cartagena, Provincia de Cartagena, Bolívar.
 						</p>
@@ -277,7 +314,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-3 col-md-6">
-					<h3>About Us</h3>
+					<h3>Acerda de</h3>
 					<p>En Sabor Express, nos apasiona crear experiencias culinarias excepcionales. Con ingredientes frescos y un equipo comprometido, cada plato cuenta una historia de sabor y calidad. ¡Te damos la bienvenida a nuestra mesa!.</p>
 				</div>
 				<div class="col-lg-3 col-md-6">
@@ -294,13 +331,13 @@
 					</ul>
 				</div>
 				<div class="col-lg-3 col-md-6">
-					<h3>Contact information</h3>
+					<h3>Informacion de contacto</h3>
 					<p class="lead">Cra. 29b #3363 #33-a, Hno. El Prado, Cartagena de Indias.</p>
 					<p class="lead"><a href="#">+57 3046413008</a></p>
 					<p><a href="https://mail.google.com/mail/u/0/#inbox?compose=new"> sabor_express@gmail.com</a></p>
 				</div>
 				<div class="col-lg-3 col-md-6">
-					<h3>Opening hours</h3>
+					<h3>Horario</h3>
 					<p><span class="text-color">Monday: </span>Closed</p>
 					<p><span class="text-color">Tue-Wed :</span> 9:Am - 10PM</p>
 					<p><span class="text-color">Thu-Fri :</span> 9:Am - 10PM</p>
@@ -313,7 +350,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
-						<p class="company-name">All Rights Reserved. &copy; 2024 <a href="https://www.facebook.com/SaboresExpressOficial/">Sabor express Restaurant</a> Design By : 
+						<p class="company-name">Reservados todos los derechos. &copy; 2024 <a href="https://www.facebook.com/SaboresExpressOficial/">Sabor express Restaurant</a> Diseñado por : 
 							<a href="https://www.facebook.com/profile.php?id=100008874960558&mibextid=kFxxJD">Oscar Fonseca</a></p>
 					</div>
 				</div>
@@ -341,29 +378,30 @@
 <script src="{% static 'js/contact-form-script.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
 
-<!-- Formulario de reserva -->
-
+  
 <script>
-    // Función para mostrar el mensaje emergente
-    function mostrarMensajeExito() {
-        var mensajeExito = document.getElementById('mensaje-exito');
-        mensajeExito.style.display = 'block';
-        setTimeout(function(){
-            mensajeExito.style.display = 'none';
-        }, 5000); // El mensaje se ocultará después de 5 segundos
-    }
+  function enviarFormulario() {
+    // Envía el formulario utilizando AJAX
+    $.ajax({
+      url: $('#reservationForm').attr('action'), // Obtiene la URL de acción del formulario
+      type: $('#reservationForm').attr('method'), // Obtiene el método del formulario (POST)
+      data: $('#reservationForm').serialize(), // Serializa los datos del formulario
+      
+      success: function(response) {
+        // Muestra un mensaje de confirmación
+        $('#msgSubmit').text('Su reserva se ha guardado exitosamente. Estaremos en contacto con usted por correo.');
+        $('#msgSubmit').removeClass('hidden'); // Muestra el mensaje
+      }
+    });
+    
+    return false; // Evita el envío automático del formulario
+  }
 </script>
 
-<div id="mensaje-exito" style="display: none;">
-    <div style="background-color: #4CAF50; color: white; text-align: center; padding: 10px;">
-        <strong>¡Reserva realizada con éxito!</strong> Pronto lo contactaremos por correo electrónico.
-    </div>
-</div>
+</script>
 
-{% if request.method == 'POST' %}
-    <script>
-        mostrarMensajeExito();
-    </script>
-{% endif %}
+
+  
+
 </body>
 </html>
