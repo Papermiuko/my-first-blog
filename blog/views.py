@@ -18,13 +18,7 @@ def menu(request):
 def reservation(request):
     return render(request, 'reservation.html', {})
 
-from django.contrib import messages
-from .models import Reserva
 
-
-from datetime import datetime
-
-from datetime import datetime
 
 def reservar(request):
     if request.method == 'POST':

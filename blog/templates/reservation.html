@@ -65,8 +65,38 @@
   color: white; /* Cambia el color del texto cuando el botón está seleccionado */
 }
 .confirmation-container {
-  margin-top: 40px; /* Ajusta este valor según sea necesario para el espacio deseado */
+    background-color: rgba(144, 255, 147, 0.6); /* Fondo verde con transparencia */
+    color: #000; /* Texto negro */
+    padding: 15px; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */
+    margin-top: 20px; /* Margen superior */
+    opacity: 0; /* Inicialmente invisible */
+    transition: opacity 0.5s ease; /* Transición suave */
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
 }
+
+.confirmation-container.show {
+    opacity: 1; /* Mostrar con transición */
+}
+
+.confirmation-message {
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    font-weight: bold;
+    text-align: center;
+}
+#msgSubmit {
+    font-family: "Arial", sans-serif; /* Cambia el tipo de letra a Arial */
+    font-size: 14px; /* Tamaño de fuente */
+    font-weight: bold; /* Peso de la fuente */
+    color: #000000; /* Color del texto */
+}
+
+
+
 
 
 	</style>
@@ -152,16 +182,15 @@
 												<div class="input-group-append">
 													<div class="btn-group" data-toggle="buttons">
 														<label class="btn btn-light">
-														  <input type="radio" name="jornada" id="amOption" value="AM" autocomplete="off" required> AM
+														  <input type="radio" name="jornada" id="amOption" value="AM" autocomplete="off" required data-error> AM
 														</label>
 														<label class="btn btn-light">
-														  <input type="radio" name="jornada" id="pmOption" value="PM" autocomplete="off" required> PM
+														  <input type="radio" name="jornada" id="pmOption" value="PM" autocomplete="off" required data-error> PM
 														</label>
-													  </div>
-													  
+													</div>
 												</div>
 											</div>
-											<div class="help-block with-errors"></div>
+											<div class="help-block with-errors">Por favor seleccione la hora y la jornada</div>
 										</div>
 									</div>
 									<div class="col-md-12">
@@ -202,12 +231,12 @@
 									</div>
 								</div>
 							</div>
-								<!-- Botón de envío -->
+								<!-- Campos del formulario -->
 								<button class="btn btn-common" id="submit" type="submit">Enviar</button>
+								<!-- Contenedor de confirmación -->
 								<div class="confirmation-container">
-									<!-- Mensaje de confirmación oculto -->
-									<div id="msgSubmit"  class="h3 text-center hidden"></div>
-								</div>
+									<div id="msgSubmit" class="confirmation-message">Su reserva se ha guardado exitosamente. Estaremos en contacto con usted por correo.</div>
+								</div>								
 							<div class="clearfix"></div>
 						</form>
 					</div>
@@ -360,48 +389,84 @@
 	</footer>
 	<!-- End Footer -->
 
-<!-- ALL JS FILES -->
-<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
-<script src="{% static 'js/popper.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<!-- ALL JS FILES -->
+	<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'js/popper.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
 
-<!-- ALL PLUGINS -->
-<script src="{% static 'js/jquery.superslides.min.js' %}"></script>
-<script src="{% static 'js/images-loded.min.js' %}"></script>
-<script src="{% static 'js/isotope.min.js' %}"></script>
-<script src="{% static 'js/baguetteBox.min.js' %}"></script>
-<script src="{% static 'js/picker.js' %}"></script>
-<script src="{% static 'js/picker.time.js' %}"></script>
-<script src="{% static 'js/picker.date.js' %}"></script>
-<script src="{% static 'js/legacy.js' %}"></script>
-<script src="{% static 'js/form-validator.min.js' %}"></script>
-<script src="{% static 'js/contact-form-script.js' %}"></script>
-<script src="{% static 'js/custom.js' %}"></script>
+	<!-- ALL PLUGINS -->
+	<script src="{% static 'js/jquery.superslides.min.js' %}"></script>
+	<script src="{% static 'js/images-loded.min.js' %}"></script>
+	<script src="{% static 'js/isotope.min.js' %}"></script>
+	<script src="{% static 'js/baguetteBox.min.js' %}"></script>
+	<script src="{% static 'js/picker.js' %}"></script>
+	<script src="{% static 'js/picker.time.js' %}"></script>
+	<script src="{% static 'js/picker.date.js' %}"></script>
+	<script src="{% static 'js/legacy.js' %}"></script>
+	<script src="{% static 'js/form-validator.min.js' %}"></script>
+	<script src="{% static 'js/contact-form-script.js' %}"></script>
+	<script src="{% static 'js/custom.js' %}"></script>
 
   
-<script>
-  function enviarFormulario() {
+    <script>
+$(document).ready(function() {
+    $('#submit').click(function() {
+        enviarFormulario();
+        return false; // Evita el envío automático del formulario
+    });
+});
+
+function enviarFormulario() {
     // Envía el formulario utilizando AJAX
     $.ajax({
-      url: $('#reservationForm').attr('action'), // Obtiene la URL de acción del formulario
-      type: $('#reservationForm').attr('method'), // Obtiene el método del formulario (POST)
-      data: $('#reservationForm').serialize(), // Serializa los datos del formulario
-      
-      success: function(response) {
-        // Muestra un mensaje de confirmación
-        $('#msgSubmit').text('Su reserva se ha guardado exitosamente. Estaremos en contacto con usted por correo.');
-        $('#msgSubmit').removeClass('hidden'); // Muestra el mensaje
-      }
+        url: $('#reservationForm').attr('action'),
+        type: $('#reservationForm').attr('method'),
+        data: $('#reservationForm').serialize(),
+        
+        success: function(response) {
+            // Muestra el mensaje de confirmación
+            $('#msgSubmit').text('Su reserva se ha guardado exitosamente. Estaremos en contacto con usted por correo.');
+            $('.confirmation-container').addClass('show'); // Agrega la clase show para mostrar el contenedor
+        }
     });
     
     return false; // Evita el envío automático del formulario
-  }
-</script>
+}
 
-</script>
+$(document).ready(function() {
+    $('#submit').click(function() {
+        enviarFormulario();
+    });
+});
 
+function enviarFormulario() {
+    // Envía el formulario utilizando AJAX
+    $.ajax({
+        url: $('#reservationForm').attr('action'),
+        type: $('#reservationForm').attr('method'),
+        data: $('#reservationForm').serialize(),
+        
+        success: function(response) {
+            // Muestra el mensaje de confirmación
+            $('#msgSubmit').text('Su reserva se ha guardado exitosamente. Estaremos en contacto con usted por correo.');
+            $('.confirmation-container').addClass('show'); // Agrega la clase show para mostrar el contenedor
+            
+            // Oculta el mensaje después de 5 segundos
+            setTimeout(function() {
+                $('.confirmation-container').removeClass('show'); // Quita la clase show para ocultar el contenedor
+            }, 5000);
+        }
+    });
+    
+    return false; // Evita el envío automático del formulario
+}
 
+    </script>
+
+	
   
+
+
 
 </body>
 </html>
